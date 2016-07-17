@@ -1,0 +1,28 @@
+package action;
+
+import demo.User;
+import mint.mvc.annotation.BaseMapping;
+import mint.mvc.annotation.Mapping;
+import mint.mvc.annotation.ServiceNames;
+
+@BaseMapping("/serviceDemo")
+public class ServiceDemoAction {
+	
+	/**
+	 * <p>Service（服务）的作用类似于Interceptor（拦截器），都是在action执行之前，对请求进行拦截和处理。
+	 * 但是和拦截器不同的是，action可以通过@ServiceNames注解来主动指定由哪些服务来拦截请求，因此服务
+	 * 使用起来更加的灵活。</p>
+	 * 
+	 * <p>一个合法服务必须继承Service抽象类并且实现service方法，同时还要使用@ServiceName注解为服务起一个名字</p>
+	 * 
+	 * <p>服务特别的方便有用，常见的使用场合比如验证码验证，文件上传等，也可以用来做自动登陆</p>
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@ServiceNames("$login")
+	@Mapping(urls="")
+	public String service(User user) {
+		return "当前登录用户：" + user.getEmail();
+	}
+}

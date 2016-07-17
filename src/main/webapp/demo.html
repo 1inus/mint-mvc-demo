@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>mint-mvc-demo</title>
+<link rel="stylesheet" href="libs/highlight/styles/tomorrow-night-bright.css"/>
+<style>
+	h1{margin-bottom:5px;}
+	*{font-family:"微软雅黑", arial;}
+	code{font-size:14px;}
+	body{width:1100px;margin:0 auto;}
+	label{display:block;}
+	table{width:100%;color:#333333;border-width: 1px;border-color: #666666;border-collapse:collapse;margin-bottom:20px;}
+	th{	text-align:left;background-color: #dedede;}
+	th,td{border:1px solid #666666;padding:5px 0;padding:8px;}
+	td a{display:block;}
+	td a{display:inline-block;word-break: break-word;margin:10px 0;background:lightgoldenrodyellow;}
+	h2{padding:10px;margin:0;border:1px solid #666666;border-bottom:0;background-color: #dedede;box-sizing:border-box;}
+	.left{float:left;width:900px;margin-right:10px;}
+	.right{overflow:hidden;}
+	.menu{position:fixed;top:10px;border:1px solid #666;padding:5px;}
+	.menu a{text-decoration:none;display:block;color:#444;font-weight:600;font-size:18px;}
+	.menu h2{border:none;}
+</style>
+</head>
+<body>
+<div class="left">
+<h1>mint-mvc 使用  demo</h1>
+
+<h2 id="title1">mint-mvc接收参数(相关代码:action.ParamDemoAction.java)</h2>
+<table>
+	<tr>
+		<th width="10%">功能</th>
+		<th width="30%">url</th>
+		<th width="60%">备注</th>
+	</tr>
+	<tr>
+		<td width="300">接收url参数</td>
+		<td><a target="result" href="paramDemo/stringparam/1024">paramDemo/stringparam/1024</a></td>
+		<td>
+			<span>action代码：</span>
+<pre><code class="java">
+@Mapping(urls="/{param1}/{param2:\\\\d+}")
+public String urlParams(String param1, Integer param2){
+	return String.format("url参数：param1=%s;param2=%d", 
+			param1, param2);
+}
+</code></pre>
+		</td>
+	</tr>
+	<tr>
+		<td>接收请求参数</td>
+		<td><a target="result" href="paramDemo/requestParams?name=mint&pwd=strongpwd">paramDemo/requestParams?name=mint&pwd=strongpwd</a></td>
+		<td>
+<span>action代码：</span>
+<pre><code class="java">
+@Mapping(urls="/requestParams")
+public String requestParams(String name, String pwd){
+	return String.format("接受到参数：name=%s;password=%s",
+			name, pwd);
+}
+</code></pre>
+		</td>
+	</tr>
+	<tr>
+		<td>初始化一个bean类的action参数</td>
+		<td><a target="result" href="paramDemo/initBean?u.id=1001&u.email=cnliangwei@foxmail.com">paramDemo/initBean?u.id=1001&u.email=cnliangwei@foxmail.com</a></td>
+		<td><span>action代码：</span>
+<pre><code class="java">
+@Mapping(urls="/initBean")
+public String initBean(@Required User u){
+	return String.format("接受到参数：id=%s;email=%s",
+			u.getId(), u.getEmail());
+}
+</code></pre></td>
+	</tr>
+	<tr>
+		<td>用request对象的属性(attribute)初始化action参数</td>
+		<td><a target="result" href="paramDemo/getAttribute">paramDemo/getAttribute</a><br /></td>
+		<td>
+<span>拦截器代码：</span>
+<pre><code class="java">
+···
+@InterceptorOrder(0)
+@InterceptorMapping(urls={"/**"})
+public class GlobalInterceptor extends Interceptor{
+	
+	public void intercept(ActionContext ctx, InterceptorChain chain) 
+			throws Exception {
+		/* 在action被调用之前，调用request.setAttribute设置的数据，
+		 可以在action里声明同类型同名的参数接收到*/
+		HttpServletRequest request = ctx.getHttpServletRequest();
+		
+		User user = new User();
+		user.setId("8888");
+		user.setEmail("cnliangwei@foxmail.com");
+		request.setAttribute("user", user);
+		
+		chain.doInterceptor(ctx);
+	}
+}
+···</code></pre>
+
+<span>action代码：</span>
+<pre><code class="java">
+@Mapping(urls="/getAttribute")
+public String getAttribute(User user){
+	return String.format("接受到参数：id=%s;email=%s", 
+			user.getId(), user.getEmail());
+}</code></pre></td>
+	</tr>
+	<tr>
+		<td>接受数组参数</td>
+		<td>
+			<a target="result" href="paramDemo/initArray?arr=13&arr=14">paramDemo/initArray?arr=13&arr=14</a><br />
+			<a target="result" href="paramDemo/initArray?arr[]=14&arr[]=13">paramDemo/initArray?arr[]=14&arr[]=13</a><br />
+		</td>
+		<td>
+<span>action代码：</span>
+<pre><code class="java">
+@Mapping(urls="/initArray")
+public String arrayParams(Integer[] arr){
+	return String.format("接受到参数：arr[0]=%d;arr[1]=%d",
+			arr[0], arr[1]);
+}
+</code></pre>
+		</td>
+	</tr>
+	<tr>
+		<td>action接收"内置参数"</td>
+		<td>
+			<a target="result" href="paramDemo/buildIdParams">paramDemo/buildIdParams</a><br />
+		</td>
+		<td>
+<span>action代码：</span>
+<pre><code class="java">
+@Mapping(urls="/buildIdParams")
+public String buildIdParams(
+		HttpServletResponse resp, 
+		HttpServletRequest req, 
+		HttpSession session, 
+		Cookie[] cookies){
+	
+	return String.format("接受到参数：&lt;br/&gt;"
+		+ "response=%s;&lt;br/&gt;request=%s;"
+		+ "&lt;br/&gt;session=%s;&lt;br/&gt;cookies=%s", 
+		resp.toString(), req.toString(), 
+		session.toString(), cookies.toString());
+}
+</code></pre>
+		</td>
+	</tr>
+	<tr>
+		<td>采用Cookie初始化action参数</td>
+		<td>
+			<a target="result" href="paramDemo/setCookie">paramDemo/setCookie(先设置cookie)</a><br />
+			<a target="result" href="paramDemo/getCookie">paramDemo/getCookie</a>
+		</td>
+		<td>
+<span>setCookie代码：</span>
+<pre><code class="java">
+@Mapping(urls="/setCookie", method="get")
+public String setCookie(HttpServletResponse resp){
+	String c0 = "for auto login" + new Date().getTime()/1000;
+	String c1 = new Date().getTime()/1000+"";
+	
+	Cookie cookie0 = new Cookie("UID", c0);
+	cookie0.setPath("/");
+	cookie0.setMaxAge(3600);
+	cookie0.setHttpOnly(true);
+	resp.addCookie(cookie0);
+	
+	Cookie cookie1 = new Cookie("DATE", c1);
+	cookie1.setPath("/");
+	cookie1.setMaxAge(3600);
+	cookie1.setHttpOnly(true);
+	resp.addCookie(cookie1);
+	
+	return String.format("两个cookie：UID=%s;DATE=%s", c0, c1);
+}</code></pre>
+<span>getCookie代码：</span>
+<pre><code class="java">
+@Mapping(urls="/getCookie")
+public String getCookie(Cookie UID, Cookie DATE){
+	return String.format("获取到cookie：cookie(UID)=%s;cookie(DATE)=%s", 
+			UID.getValue(), DATE.getValue());
+}
+</code></pre>
+		</td>
+	</tr>
+</table>
+
+<h2 id="title2">mint-mvc返回值(相关代码:action.ReturnDemoAction.java)</h2>
+<table>
+	<tr>
+		<th width="10%">功能</th>
+		<th width="30%">url</th>
+		<th width="60%">备注</th>
+	</tr>
+	<tr>
+		<td>返回字符串等普通数据</td>
+		<td><a target="result" href="returnDemo/returnString">returnDemo/returnString</a></td>
+		<td>
+<pre><code class="java">
+@Mapping(urls="/returnString", method="get")
+public String returnString(){
+	return "return string";
+}
+</code></pre>
+		</td>
+	</tr>
+	<tr>
+		<td>返回jsp模板</td>
+		<td><a target="result" href="returnDemo/returnJsp">paramDemo/returnJsp</a></td>
+		<td>
+<span>render.jsp模板:</span>
+<pre><code class="html">
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8"
+pageEncoding="UTF-8"%&gt;
+&lt;!DOCTYPE html&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;table&gt;
+	&lt;tr&gt;&lt;td&gt;id:&lt;/td&gt;&lt;td&gt;${user.id }&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;td&gt;email:&lt;/td&gt;&lt;td&gt;${user.email }&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</code></pre>
+<span>action代码：</span>
+<pre><code class="java">
+@Mapping(urls="/returnJsp", method="get")
+public TemplateRenderer returnJsp(){
+	User user = new User();
+	user.setId(new Date().getTime()+"");
+	user.setEmail("cnliangwei@foxmail.com");
+	
+	//request.setAttribute("user", user);
+	Map<String, Object> param = new HashMap<String, Object>();
+	param.put("user", user);
+	return new TemplateRenderer("/render.jsp", param);
+}
+</code></pre>
+		</td>
+	</tr>
+	<tr>
+		<td>返回自定义渲染器</td>
+		<td>
+			<a target="result" href="returnDemo/returnRenderer0">returnDemo/returnRenderer0</a>
+		</td>
+		<td>
+<span>定义渲染器</span>
+<pre><code class="java">
+package Renderer;
+import java.io.PrintWriter;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import mint.mvc.renderer.Renderer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+public class JSONRenderer extends Renderer{
+	private Object obj;
+	
+	public JSONRenderer (Object obj){
+		this.obj = obj;
+	}
+	
+	@Override
+	public void render(ServletContext ctx, HttpServletRequest req,
+			HttpServletResponse resp) throws Exception {
+		
+		resp.setContentType("application/json;charset=UTF-8");
+		
+		PrintWriter pw = resp.getWriter();
+		//将数据转换成JSON字符串，然后输出。这里采用了jackson JSON库
+		ObjectMapper mapper = new ObjectMapper();
+		pw.write(mapper.writeValueAsString(obj));
+		pw.flush();
+	}
+}
+</code></pre>
+<span>返回渲染器</span>
+<pre><code class="java">
+@Mapping(urls="/returnRenderer0", method="get")
+public JSONRenderer returnRenderer(){
+	User user = new User();
+	user.setId(new Date().getTime()+"");
+	user.setEmail("cnliangwei@foxmail.com");
+	
+	return new JSONRenderer(user);
+}
+</code></pre>
+		</td>
+	</tr>
+		<tr>
+		<td>手动执行渲染器</td>
+		<td>
+			<a target="result" href="returnDemo/returnRenderer1">returnDemo/returnRenderer1(手动调用render方法)</a>
+		</td>
+		<td>
+<span>返回渲染器</span>
+<pre><code class="java">
+@Mapping(urls="/returnRenderer1", method="get")
+public void returnRenderer1(HttpServletResponse resp) throws Exception{
+	User user = new User();
+	user.setId(new Date().getTime()+"");
+	user.setEmail("cnliangwei@foxmail.com");
+	
+	new JSONRenderer(user).render(null, null, resp);
+}
+</code></pre>
+		</td>
+	</tr>
+</table>
+
+<h2 id="title3">mint-mvc上传文件(相关代码:action.UploadDemoAction.java)</h2>
+<table>
+	<tr>
+		<th width="10%">功能</th>
+		<th width="30%">url</th>
+		<th width="60%">备注</th>
+	</tr>
+	<tr>
+		<td>上传文件</td>
+		<td>
+			<form action="uploadDemo/upload?id=test" method="post" enctype="multipart/form-data" target="result">
+				<input type="file" name="file" id="file" accept="image/*" required/>
+				<label>
+					<span>普通参数:</span>
+					<input type="text" name="resourceId" required value="一个普通参数"/>
+				</label>
+				<button type="submit">上传</button>
+			</form>
+		</td>
+		<td>
+<span>上传文件的配置</span>
+<pre><code class="java">
+@Mapping(urls="/upload", method="post")
+@MultipartConfig(attributeName="imgs", limitSize = 1024*1024)
+public String uploadAction(@Required TempFile[] imgs, HttpSession session)
+	throws Exception{
+		
+	TempFile file = imgs[0];
+	
+	ServletContext application = session.getServletContext(); 
+	String savePath = application.getRealPath("/uploads/"+file.getName());
+	
+	//将文件保存在应用的目录(uploads)下
+	//（生产环境中不建议保存在应用目录下）
+	file.saveAs(savePath);
+	
+	return String.format("&lt;a href='%s'&gt;upload success! view image&lt;/a&gt;", 
+			"../uploads/"+file.getName());
+}
+</code></pre>
+		</td>
+	</tr>
+</table>
+
+<h2 id="title4">mint-mvc拦截器(相关代码:action.InterceptorDemoAction.java 和 interceptor.GlobalInterceptor.java)</h2>
+<table>
+	<tr>
+		<th width="10%">功能</th>
+		<th width="30%">url</th>
+		<th width="60%">备注</th>
+	</tr>
+	<tr>
+		<td>用拦截器拦截请求</td>
+		<td><a href="interceptorDemo" target="result">interceptorDemo</a></td>
+		<td>
+<span>定义拦截器</span>
+<pre><code class="java">
+package interceptor;
+import javax.servlet.http.HttpServletRequest;
+import demo.User;
+import mint.mvc.annotation.InterceptorMapping;
+import mint.mvc.annotation.InterceptorOrder;
+import mint.mvc.core.ActionContext;
+import mint.mvc.core.Interceptor;
+import mint.mvc.core.InterceptorChain;
+
+@InterceptorOrder(0)
+@InterceptorMapping(urls={"/**"})
+public class GlobalInterceptor extends Interceptor{
+	
+	public void intercept(ActionContext ctx, InterceptorChain chain)
+		throws Exception {
+			
+		/* 在action被调用之前，调用request.setAttribute设置的数据，
+		 可以在action里声明同类型同名的参数接收到*/
+		HttpServletRequest request = ctx.getHttpServletRequest();
+		
+		User user = new User();
+		user.setId("8888");
+		user.setEmail("cnliangwei@foxmail.com");
+		request.setAttribute("user", user);
+		
+		chain.doInterceptor(ctx);
+	}
+}
+</code></pre>
+<span>拦截器被调用</span>
+<pre><code class="java">
+@Mapping(urls="")
+public String service(User user) {
+	return "当前登录用户：" + user.getEmail();
+}</code></pre>
+		</td>
+	</tr>
+</table>
+
+<h2 id="title5">mint-mvc服务(相关代码:action.ServiceDemoAction.java 和 Service.LoginService.java)</h2>
+<table>
+	<tr>
+		<th width="10%">功能</th>
+		<th width="30%">url</th>
+		<th width="60%">备注</th>
+	</tr>
+	<tr>
+		<td>用服务拦截请求</td>
+		<td><a href="serviceDemo" target="result">serviceDemo</a></td>
+		<td>
+<span>定义服务</span>
+<pre><code class="java">
+package service;
+import javax.servlet.http.HttpServletRequest;
+import demo.User;
+import mint.mvc.annotation.ServiceName;
+import mint.mvc.core.ActionContext;
+import mint.mvc.core.Service;
+import mint.mvc.core.ServiceChain;
+
+@ServiceName("$login")
+public class LoginService extends Service{
+
+	@Override
+	public void service(ActionContext ctx, ServiceChain chain)
+		throws Exception {
+			
+		HttpServletRequest request = ctx.getHttpServletRequest();
+		
+		//在Service中进行基础认证
+		User user = new User();
+		user.setId("8888");
+		user.setEmail("cnliangwei@foxmail.com");
+		
+		//然后用request把认证结果传递到action中
+		request.setAttribute("user", user);
+		
+		chain.doService(ctx);
+	}
+}
+</code></pre>
+<span>调用服务</span>
+<pre><code class="java">
+@ServiceNames("$login")
+@Mapping(urls="")
+public String service(User user) {
+	return "当前登录用户：" + user.getEmail();
+}
+</code></pre>
+		</td>
+	</tr>
+</table>
+
+<h2 id="title6">附 mint-mvc 的 web.xml完全配置</h2>
+<table>
+	<tr>
+		<td>
+<pre><code class="html">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:jsp="http://java.sun.com/xml/ns/javaee/jsp"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0"&gt;
+	
+	&lt;context-param&gt;
+		&lt;param-name&gt;jsp&lt;/param-name&gt;       
+		&lt;param-value&gt;page&lt;/param-value&gt;       
+	&lt;/context-param&gt;
+	&lt;context-param&gt;       
+		&lt;param-name&gt;someName&lt;/param-name&gt;       
+		&lt;param-value&gt;someValue&lt;/param-value&gt;       
+	&lt;/context-param&gt;
+	
+	&lt;!--mint-mvc 前端控制器是一个servlet --&gt;
+	&lt;servlet&gt;
+		&lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+		&lt;servlet-class&gt;mint.mvc.core.ServiceServlet&lt;/servlet-class&gt;
+		
+		&lt;!-- 声明组件（包括action、interceptor、service）所在的包，
+		mvc启动时回到对应的包下扫描并初始化各个组件 --&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;actionPackages&lt;/param-name&gt;
+			&lt;param-value&gt;action;interceptor;service&lt;/param-value&gt;
+		&lt;/init-param&gt;
+		
+		&lt;!-- 声明模板，目前只支持jsp --&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;template&lt;/param-name&gt;
+			&lt;param-value&gt;Jsp&lt;/param-value&gt;
+		&lt;/init-param&gt;
+		
+		&lt;!-- 是否响应静态文件请求，一些纯接口的应用可以设置成false --&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;handleStatic&lt;/param-name&gt;
+			&lt;param-value&gt;true&lt;/param-value&gt;
+		&lt;/init-param&gt;
+		
+		&lt;!-- 修改静态文件(html,js,css...)的默认路径（默认就是webapp目录），在做小项目时很方便 --&gt;
+		&lt;!-- &lt;init-param&gt;
+			&lt;param-name&gt;staticBase&lt;/param-name&gt;
+			&lt;param-value&gt;E:\myproject\ftzmall\mall_static\static\community\&lt;/param-value&gt;
+		&lt;/init-param&gt; --&gt;
+		
+		&lt;!-- 处理静态文件是否向服务器询问文件的修改时间，非必要。boolean类型，默认为true。 --&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;staticFileLastModifiedCheck&lt;/param-name&gt;
+			&lt;param-value&gt;true&lt;/param-value&gt;
+		&lt;/init-param&gt;
+		
+		&lt;!-- 静态文件缓存设置，非必要。字符串类型，默认为"max-age=600"。 --&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;staticFileCacheControl&lt;/param-name&gt;
+			&lt;param-value&gt;max-age=1800&lt;/param-value&gt;
+		&lt;/init-param&gt;
+		
+		&lt;!-- 异常处理器 --&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;ExceptionHandler&lt;/param-name&gt;
+			&lt;param-value&gt;utils.GlobalExceptionHandler&lt;/param-value&gt;
+		&lt;/init-param&gt;
+		
+		&lt;!-- 上传文件的临时存放目录 --&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;uploadTemp&lt;/param-name&gt;
+			&lt;param-value&gt;D:\upload&lt;/param-value&gt;
+		&lt;/init-param&gt;
+		
+		&lt;load-on-startup&gt;0&lt;/load-on-startup&gt;
+		
+		&lt;!-- 开启servlet3.0的异步处理请求功能，必须是为true --&gt;
+		&lt;async-supported&gt;true&lt;/async-supported&gt;
+	&lt;/servlet&gt;
+	
+	&lt;!--前端控制器servlet的匹配路径--&gt;
+	&lt;servlet-mapping&gt;
+		&lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+		&lt;url-pattern&gt;/&lt;/url-pattern&gt;
+	&lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+		</td>
+	</tr>
+</table>
+</div>
+<div class="right">
+	<div class="menu">
+		<h2>目录</h2>
+		<a href="#title1">mint-mvc接收参数</a>
+		<a href="#title2">mint-mvc返回值</a>
+		<a href="#title3">mint-mvc上传文件</a>
+		<a href="#title4">mint-mvc拦截器</a>
+		<a href="#title5">mint-mvc服务</a>
+		<a href="#title6">附mint-mvc的完全 web.xml配置</a>
+	</div>
+</div>
+<script src="libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

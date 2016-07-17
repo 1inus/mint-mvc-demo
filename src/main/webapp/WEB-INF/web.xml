@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:jsp="http://java.sun.com/xml/ns/javaee/jsp"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+	
+	<context-param>       
+		<param-name>jsp</param-name>       
+		<param-value>page</param-value>       
+	</context-param>
+	<context-param>       
+		<param-name>someName</param-name>       
+		<param-value>someValue</param-value>       
+	</context-param>
+	
+	<!--mint-mvc 前端控制器是一个servlet -->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>mint.mvc.core.ServiceServlet</servlet-class>
+		
+		<!-- 声明组件（包括action、interceptor、service）所在的包，mvc启动时回到对应的包下扫描并初始化各个组件 -->
+		<init-param>
+			<param-name>actionPackages</param-name>
+			<param-value>action;interceptor;service</param-value>
+		</init-param>
+		
+		<!-- 声明模板，目前只支持jsp -->
+		<init-param>
+			<param-name>template</param-name>
+			<param-value>Jsp</param-value>
+		</init-param>
+		
+		<!-- 是否响应静态文件请求，一些纯接口的应用可以设置成false -->
+		<init-param>
+			<param-name>handleStatic</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		
+		<!-- 修改静态文件(html,js,css...)的默认路径（默认就是webapp目录），在做小项目时很方便 -->
+		<!-- <init-param>
+			<param-name>staticBase</param-name>
+			<param-value>E:\myproject\ftzmall\mall_static\static\community\</param-value>
+		</init-param> -->
+		
+		<!-- 处理静态文件是否向服务器询问文件的修改时间，非必要。boolean类型，默认为true。 -->
+		<init-param>
+			<param-name>staticFileLastModifiedCheck</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		
+		<!-- 静态文件缓存设置，非必要。字符串类型，默认为"max-age=600"。 -->
+		<init-param>
+			<param-name>staticFileCacheControl</param-name>
+			<param-value>max-age=1800</param-value>
+		</init-param>
+		
+		<!-- 异常处理器 -->
+		<init-param>
+			<param-name>ExceptionHandler</param-name>
+			<param-value>utils.GlobalExceptionHandler</param-value>
+		</init-param>
+		
+		<!-- 上传文件的临时存放目录 -->
+		<init-param>
+			<param-name>uploadTemp</param-name>
+			<param-value>D:\upload</param-value>
+		</init-param>
+		
+		<load-on-startup>0</load-on-startup>
+		
+		<!-- 开启servlet3.0的异步处理请求功能，必须是为true -->
+		<async-supported>true</async-supported>
+	</servlet>
+	
+	<!--前端控制器servlet的匹配路径-->
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+</web-app>
