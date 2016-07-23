@@ -21,7 +21,12 @@
 		
 		<!-- 声明组件（包括action、interceptor、service）所在的包，mvc启动时回到对应的包下扫描并初始化各个组件 -->
 		<init-param>
-			<param-name>actionPackages</param-name>
+			<param-name>componentReportor</param-name>
+			<param-value>reportor.MyComponentReportor</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>componentPackages</param-name>
 			<param-value>action;interceptor;service</param-value>
 		</init-param>
 		

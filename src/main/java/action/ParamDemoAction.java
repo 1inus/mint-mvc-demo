@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import demo.User;
-import mint.mvc.annotation.BaseMapping;
-import mint.mvc.annotation.Mapping;
+import mint.mvc.annotation.Module;
+import mint.mvc.annotation.API;
 import mint.mvc.annotation.Required;
 
 /**
@@ -26,7 +26,7 @@ import mint.mvc.annotation.Required;
  * @author liangwei
  */
 
-@BaseMapping("/paramDemo")
+@Module(url="/paramDemo")
 public class ParamDemoAction {
 	
 	/**
@@ -38,7 +38,7 @@ public class ParamDemoAction {
 	 * @param params2	接收一个整型参数，并且这个参数用简单正则进行限制
 	 * @return
 	 */
-	@Mapping(urls="/{param1}/{param2:\\\\d+}")
+	@API(urls="/{param1}/{param2:\\\\d+}")
 	public String urlParams(String param1, Integer param2){
 		return String.format("url参数：param1=%s;param2=%d", 
 				param1, param2);
@@ -58,7 +58,7 @@ public class ParamDemoAction {
 	 * @param pwd
 	 * @return
 	 */
-	@Mapping(urls="/requestParams")
+	@API(urls="/requestParams")
 	public String requestParams(String name, String pwd){
 		return String.format("接受到参数：name=%s;password=%s",
 				name, pwd);
@@ -72,7 +72,7 @@ public class ParamDemoAction {
 	 * @param u
 	 * @return
 	 */
-	@Mapping(urls="/initBean")
+	@API(urls="/initBean")
 	public String initBean(@Required User u){
 		return String.format("接受到参数：id=%s;email=%s",
 				u.getId(), u.getEmail());
@@ -83,7 +83,7 @@ public class ParamDemoAction {
 	 * @param arr 能接收参数名为arr 或者 arr[] 的参数
 	 * @return
 	 */
-	@Mapping(urls="/initArray")
+	@API(urls="/initArray")
 	public String arrayParams(Integer[] arr){
 		return String.format("接受到参数：arr[0]=%d;arr[1]=%d",
 				arr[0], arr[1]);
@@ -103,7 +103,7 @@ public class ParamDemoAction {
 	 * @param user
 	 * @return
 	 */
-	@Mapping(urls="/getAttribute")
+	@API(urls="/getAttribute")
 	public String getAttribute(User user){
 		return String.format("接受到参数：id=%s;email=%s", 
 				user.getId(), user.getEmail());
@@ -113,7 +113,7 @@ public class ParamDemoAction {
 	 * 设置cookie
 	 * @param resp
 	 */
-	@Mapping(urls="/setCookie", method="get")
+	@API(urls="/setCookie", method="get")
 	public String setCookie(HttpServletResponse resp){
 		String c0 = "for auto login" + new Date().getTime()/1000;
 		String c1 = new Date().getTime()/1000+"";
@@ -143,7 +143,7 @@ public class ParamDemoAction {
 	 * @param session
 	 * @param cookies
 	 */
-	@Mapping(urls="/buildIdParams")
+	@API(urls="/buildIdParams")
 	public String buildIdParams(
 			HttpServletResponse resp, 
 			HttpServletRequest req, 
@@ -164,9 +164,14 @@ public class ParamDemoAction {
 	 * @param UID
 	 * @return
 	 */
-	@Mapping(urls="/getCookie")
+	@API(urls="/getCookie")
 	public String getCookie(Cookie UID, Cookie DATE){
 		return String.format("获取到cookie：cookie(UID)=%s;cookie(DATE)=%s", 
 				UID.getValue(), DATE.getValue());
+	}
+	
+	@API(urls="/test")
+	public void test(String key, String pageSize, String page){
+		System.out.println("key:"+key+"pageSize:"+pageSize+"page:"+page);
 	}
 }

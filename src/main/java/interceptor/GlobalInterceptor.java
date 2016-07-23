@@ -5,9 +5,11 @@ import javax.servlet.http.HttpServletRequest;
 import demo.User;
 import mint.mvc.annotation.InterceptorMapping;
 import mint.mvc.annotation.InterceptorOrder;
+import mint.mvc.core.APIConfig;
 import mint.mvc.core.ActionContext;
 import mint.mvc.core.Interceptor;
 import mint.mvc.core.InterceptorChain;
+import mint.mvc.core.ModuleConfig;
 
 /** 
  * 拦截器的定义和用法
@@ -18,7 +20,7 @@ import mint.mvc.core.InterceptorChain;
 @InterceptorMapping(urls={"/**"})
 public class GlobalInterceptor extends Interceptor{
 	
-    public void intercept(ActionContext ctx, InterceptorChain chain) throws Exception {
+    public void intercept(ActionContext ctx, ModuleConfig module, APIConfig api, InterceptorChain chain) throws Exception {
     	
     	/*
     	 * 在action被调用之前，调用request.setAttribute设置的数据，

@@ -5,19 +5,19 @@ import java.io.IOException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import mint.mvc.annotation.BaseMapping;
-import mint.mvc.annotation.Mapping;
+import mint.mvc.annotation.Module;
+import mint.mvc.annotation.API;
 import mint.mvc.annotation.MultipartConfig;
 import mint.mvc.annotation.Required;
 import mint.mvc.core.upload.TempFile;
 
-@BaseMapping("/uploadDemo")
+@Module(url="/uploadDemo")
 public class UploadDemoAction {
 	/**
 	 * <p>上传图片</p>
 	 * @throws IOException 
 	 */
-	@Mapping(urls="/upload", method="post")
+	@API(urls="/upload", method="post")
 	@MultipartConfig(attributeName="imgs", limitSize = 1024*1024)
 	public String uploadAction(@Required TempFile[] imgs, HttpSession session) throws Exception{
 		TempFile file = imgs[0];

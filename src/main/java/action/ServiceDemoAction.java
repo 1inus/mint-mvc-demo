@@ -1,11 +1,11 @@
 package action;
 
 import demo.User;
-import mint.mvc.annotation.BaseMapping;
-import mint.mvc.annotation.Mapping;
+import mint.mvc.annotation.Module;
+import mint.mvc.annotation.API;
 import mint.mvc.annotation.ServiceNames;
 
-@BaseMapping("/serviceDemo")
+@Module(url="/serviceDemo")
 public class ServiceDemoAction {
 	
 	/**
@@ -21,7 +21,7 @@ public class ServiceDemoAction {
 	 * @return
 	 */
 	@ServiceNames("$login")
-	@Mapping(urls="")
+	@API(urls="")
 	public String service(User user) {
 		return "当前登录用户：" + user.getEmail();
 	}

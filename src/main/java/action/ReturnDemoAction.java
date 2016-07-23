@@ -8,18 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import Renderer.JSONRenderer;
 import demo.User;
-import mint.mvc.annotation.BaseMapping;
-import mint.mvc.annotation.Mapping;
+import mint.mvc.annotation.Module;
+import mint.mvc.annotation.API;
 import mint.mvc.renderer.TemplateRenderer;
 
-@BaseMapping("/returnDemo")
+@Module(url="/returnDemo")
 public class ReturnDemoAction {
 
 	/**
 	 * <p>返回字符串等普通数据</p>
 	 * @return
 	 */
-	@Mapping(urls="/returnString", method="get")
+	@API(urls="/returnString", method="get")
 	public String returnString(){
 		return "return string";
 	}
@@ -38,7 +38,7 @@ public class ReturnDemoAction {
 	 * 
 	 * @return
 	 */
-	@Mapping(urls="/returnJsp", method="get")
+	@API(urls="/returnJsp", method="get")
 	public TemplateRenderer returnJsp(){
 		User user = new User();
 		user.setId(new Date().getTime()+"");
@@ -56,7 +56,7 @@ public class ReturnDemoAction {
 	 * 返回任何形式的内容，包括上面的提到的形式。下面演示一下自
 	 * 己定义渲染染器的整个过程，看看如何用渲染器返回json数据。</p>
 	 */
-	@Mapping(urls="/returnRenderer0", method="get")
+	@API(urls="/returnRenderer0", method="get")
 	public JSONRenderer returnRenderer(){
 		User user = new User();
 		user.setId(new Date().getTime()+"");
@@ -69,7 +69,7 @@ public class ReturnDemoAction {
 	 * <p>手动调用JSONRenderer的render方法给客户端返回数据</p>
 	 * @throws Exception 
 	 */
-	@Mapping(urls="/returnRenderer1", method="get")
+	@API(urls="/returnRenderer1", method="get")
 	public void returnRenderer1(HttpServletResponse resp) throws Exception{
 		User user = new User();
 		user.setId(new Date().getTime()+"");
