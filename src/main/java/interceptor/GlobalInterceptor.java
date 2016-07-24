@@ -2,8 +2,10 @@ package interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import demo.User;
-import mint.mvc.annotation.InterceptorMapping;
+import mint.mvc.annotation.InterceptorConfig;
 import mint.mvc.annotation.InterceptorOrder;
 import mint.mvc.core.APIConfig;
 import mint.mvc.core.ActionContext;
@@ -17,7 +19,7 @@ import mint.mvc.core.ModuleConfig;
  * @date 2015年5月2日 下午1:51:58 
  */
 @InterceptorOrder(0)
-@InterceptorMapping(urls={"/**"})
+@InterceptorConfig(urls={"/**"}, id="i2899176", desc="全局拦截器，进行统一的授权处理", tags={"admin", "auth"})
 public class GlobalInterceptor extends Interceptor{
 	
     public void intercept(ActionContext ctx, ModuleConfig module, APIConfig api, InterceptorChain chain) throws Exception {
@@ -27,6 +29,10 @@ public class GlobalInterceptor extends Interceptor{
     	 * 可以在action里声明同类型同名的参数接收到
     	 */
         HttpServletRequest request = ctx.getHttpServletRequest();
+        
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(module));
+		System.out.println(mapper.writeValueAsString(api));
         
         User user = new User();
         user.setId("8888");
