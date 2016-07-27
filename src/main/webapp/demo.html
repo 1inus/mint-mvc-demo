@@ -40,7 +40,7 @@
 		<td>
 			<span>action代码：</span>
 <pre><code class="java">
-@Mapping(urls="/{param1}/{param2:\\\\d+}")
+@API(urls="/{param1}/{param2:\\\\d+}")
 public String urlParams(String param1, Integer param2){
 	return String.format("url参数：param1=%s;param2=%d", 
 			param1, param2);
@@ -54,7 +54,7 @@ public String urlParams(String param1, Integer param2){
 		<td>
 <span>action代码：</span>
 <pre><code class="java">
-@Mapping(urls="/requestParams")
+@API(urls="/requestParams")
 public String requestParams(String name, String pwd){
 	return String.format("接受到参数：name=%s;password=%s",
 			name, pwd);
@@ -67,7 +67,7 @@ public String requestParams(String name, String pwd){
 		<td><a target="result" href="paramDemo/initBean?u.id=1001&u.email=cnliangwei@foxmail.com">paramDemo/initBean?u.id=1001&u.email=cnliangwei@foxmail.com</a></td>
 		<td><span>action代码：</span>
 <pre><code class="java">
-@Mapping(urls="/initBean")
+@API(urls="/initBean")
 public String initBean(@Required User u){
 	return String.format("接受到参数：id=%s;email=%s",
 			u.getId(), u.getEmail());
@@ -82,7 +82,7 @@ public String initBean(@Required User u){
 <pre><code class="java">
 ···
 @InterceptorOrder(0)
-@InterceptorMapping(urls={"/**"})
+@InterceptorAPI(urls={"/**"})
 public class GlobalInterceptor extends Interceptor{
 	
 	public void intercept(ActionContext ctx, InterceptorChain chain) 
@@ -103,7 +103,7 @@ public class GlobalInterceptor extends Interceptor{
 
 <span>action代码：</span>
 <pre><code class="java">
-@Mapping(urls="/getAttribute")
+@API(urls="/getAttribute")
 public String getAttribute(User user){
 	return String.format("接受到参数：id=%s;email=%s", 
 			user.getId(), user.getEmail());
@@ -118,7 +118,7 @@ public String getAttribute(User user){
 		<td>
 <span>action代码：</span>
 <pre><code class="java">
-@Mapping(urls="/initArray")
+@API(urls="/initArray")
 public String arrayParams(Integer[] arr){
 	return String.format("接受到参数：arr[0]=%d;arr[1]=%d",
 			arr[0], arr[1]);
@@ -134,7 +134,7 @@ public String arrayParams(Integer[] arr){
 		<td>
 <span>action代码：</span>
 <pre><code class="java">
-@Mapping(urls="/buildIdParams")
+@API(urls="/buildIdParams")
 public String buildIdParams(
 		HttpServletResponse resp, 
 		HttpServletRequest req, 
@@ -159,7 +159,7 @@ public String buildIdParams(
 		<td>
 <span>setCookie代码：</span>
 <pre><code class="java">
-@Mapping(urls="/setCookie", method="get")
+@API(urls="/setCookie", method="get")
 public String setCookie(HttpServletResponse resp){
 	String c0 = "for auto login" + new Date().getTime()/1000;
 	String c1 = new Date().getTime()/1000+"";
@@ -180,7 +180,7 @@ public String setCookie(HttpServletResponse resp){
 }</code></pre>
 <span>getCookie代码：</span>
 <pre><code class="java">
-@Mapping(urls="/getCookie")
+@API(urls="/getCookie")
 public String getCookie(Cookie UID, Cookie DATE){
 	return String.format("获取到cookie：cookie(UID)=%s;cookie(DATE)=%s", 
 			UID.getValue(), DATE.getValue());
@@ -202,7 +202,7 @@ public String getCookie(Cookie UID, Cookie DATE){
 		<td><a target="result" href="returnDemo/returnString">returnDemo/returnString</a></td>
 		<td>
 <pre><code class="java">
-@Mapping(urls="/returnString", method="get")
+@API(urls="/returnString", method="get")
 public String returnString(){
 	return "return string";
 }
@@ -226,7 +226,7 @@ pageEncoding="UTF-8"%&gt;
 </code></pre>
 <span>action代码：</span>
 <pre><code class="java">
-@Mapping(urls="/returnJsp", method="get")
+@API(urls="/returnJsp", method="get")
 public TemplateRenderer returnJsp(){
 	User user = new User();
 	user.setId(new Date().getTime()+"");
@@ -278,7 +278,7 @@ public class JSONRenderer extends Renderer{
 </code></pre>
 <span>返回渲染器</span>
 <pre><code class="java">
-@Mapping(urls="/returnRenderer0", method="get")
+@API(urls="/returnRenderer0", method="get")
 public JSONRenderer returnRenderer(){
 	User user = new User();
 	user.setId(new Date().getTime()+"");
@@ -297,7 +297,7 @@ public JSONRenderer returnRenderer(){
 		<td>
 <span>返回渲染器</span>
 <pre><code class="java">
-@Mapping(urls="/returnRenderer1", method="get")
+@API(urls="/returnRenderer1", method="get")
 public void returnRenderer1(HttpServletResponse resp) throws Exception{
 	User user = new User();
 	user.setId(new Date().getTime()+"");
@@ -332,7 +332,7 @@ public void returnRenderer1(HttpServletResponse resp) throws Exception{
 		<td>
 <span>上传文件的配置</span>
 <pre><code class="java">
-@Mapping(urls="/upload", method="post")
+@API(urls="/upload", method="post")
 @MultipartConfig(attributeName="imgs", limitSize = 1024*1024)
 public String uploadAction(@Required TempFile[] imgs, HttpSession session)
 	throws Exception{
@@ -368,32 +368,42 @@ public String uploadAction(@Required TempFile[] imgs, HttpSession session)
 <span>定义拦截器</span>
 <pre><code class="java">
 package interceptor;
+
 import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import demo.User;
-import mint.mvc.annotation.InterceptorMapping;
+import mint.mvc.annotation.InterceptorConfig;
 import mint.mvc.annotation.InterceptorOrder;
+import mint.mvc.core.APIConfig;
 import mint.mvc.core.ActionContext;
 import mint.mvc.core.Interceptor;
 import mint.mvc.core.InterceptorChain;
+import mint.mvc.core.ModuleConfig;
 
-@InterceptorOrder(0)
-@InterceptorMapping(urls={"/**"})
+@InterceptorConfig(urls={"/**"}, id="i2899176", desc="全局拦截器，进行统一的授权处理", tags={"admin", "auth"})
 public class GlobalInterceptor extends Interceptor{
 	
-	public void intercept(ActionContext ctx, InterceptorChain chain)
-		throws Exception {
-			
-		/* 在action被调用之前，调用request.setAttribute设置的数据，
-		 可以在action里声明同类型同名的参数接收到*/
-		HttpServletRequest request = ctx.getHttpServletRequest();
-		
-		User user = new User();
-		user.setId("8888");
-		user.setEmail("cnliangwei@foxmail.com");
-		request.setAttribute("user", user);
-		
-		chain.doInterceptor(ctx);
-	}
+    public void intercept(ActionContext ctx, ModuleConfig module, APIConfig api, InterceptorChain chain) throws Exception {
+    	
+    	/*
+    	 * 在action被调用之前，调用request.setAttribute设置的数据，
+    	 * 可以在action里声明同类型同名的参数接收到
+    	 */
+        HttpServletRequest request = ctx.getHttpServletRequest();
+        
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(module));
+		System.out.println(mapper.writeValueAsString(api));
+        
+        User user = new User();
+        user.setId("8888");
+        user.setEmail("cnliangwei@foxmail.com");
+        request.setAttribute("user", user);
+        
+        chain.doInterceptor(ctx);
+    }
 }
 </code></pre>
 <span>拦截器被调用</span>
@@ -422,29 +432,29 @@ public String service(User user) {
 package service;
 import javax.servlet.http.HttpServletRequest;
 import demo.User;
-import mint.mvc.annotation.ServiceName;
+import mint.mvc.annotation.ServiceConfig;
+import mint.mvc.core.APIConfig;
 import mint.mvc.core.ActionContext;
+import mint.mvc.core.ModuleConfig;
 import mint.mvc.core.Service;
 import mint.mvc.core.ServiceChain;
 
-@ServiceName("$login")
+@ServiceConfig(name = "$login")
 public class LoginService extends Service{
 
 	@Override
-	public void service(ActionContext ctx, ServiceChain chain)
-		throws Exception {
-			
+	public void service(ActionContext ctx, ModuleConfig module, APIConfig api, ServiceChain chain) throws Exception {
 		HttpServletRequest request = ctx.getHttpServletRequest();
 		
 		//在Service中进行基础认证
 		User user = new User();
-		user.setId("8888");
-		user.setEmail("cnliangwei@foxmail.com");
-		
-		//然后用request把认证结果传递到action中
-		request.setAttribute("user", user);
-		
-		chain.doService(ctx);
+        user.setId("8888");
+        user.setEmail("cnliangwei@foxmail.com");
+        
+        //然后用request把认证结果传递到action中
+        request.setAttribute("user", user);
+        
+        chain.doService(ctx);
 	}
 }
 </code></pre>
@@ -472,7 +482,7 @@ public String service(User user) {
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0"&gt;
 	
-	&lt;context-param&gt;
+	&lt;context-param&gt;       
 		&lt;param-name&gt;jsp&lt;/param-name&gt;       
 		&lt;param-value&gt;page&lt;/param-value&gt;       
 	&lt;/context-param&gt;
@@ -486,10 +496,14 @@ public String service(User user) {
 		&lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
 		&lt;servlet-class&gt;mint.mvc.core.ServiceServlet&lt;/servlet-class&gt;
 		
-		&lt;!-- 声明组件（包括action、interceptor、service）所在的包，
-		mvc启动时回到对应的包下扫描并初始化各个组件 --&gt;
+		&lt;!-- 声明组件（包括module、interceptor、service）所在的包，mvc启动时回到对应的包下扫描并初始化各个组件 --&gt;
 		&lt;init-param&gt;
-			&lt;param-name&gt;actionPackages&lt;/param-name&gt;
+			&lt;param-name&gt;componentReportor&lt;/param-name&gt;
+			&lt;param-value&gt;reportor.MyComponentReportor&lt;/param-value&gt;
+		&lt;/init-param&gt;
+		
+		&lt;init-param&gt;
+			&lt;param-name&gt;componentPackages&lt;/param-name&gt;
 			&lt;param-value&gt;action;interceptor;service&lt;/param-value&gt;
 		&lt;/init-param&gt;
 		

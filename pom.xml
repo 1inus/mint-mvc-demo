@@ -7,6 +7,7 @@
 	<version>0.0.1</version>
 	<name>mint-mvc-demo Maven Webapp</name>
 	<url>http://maven.apache.org</url>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -19,7 +20,16 @@
 			<artifactId>mvc</artifactId>
 			<version>1.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
 	</dependencies>
+
 	<build>
 		<finalName>mint-mvc-demo</finalName>
 		<plugins>
@@ -30,6 +40,20 @@
 					<source>1.8</source>
 					<target>1.8</target>
 					<encoding>utf-8</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- tomcat插件 -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<port>888</port>
+					<path>/mint-mvc-demo</path>
+					<uriEncoding>UTF-8</uriEncoding>
+					<finalName>mint-mvc-demo</finalName>
+					<server>tomcat7</server>
 				</configuration>
 			</plugin>
 		</plugins>

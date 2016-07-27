@@ -1,11 +1,11 @@
 package action;
 
 import demo.User;
-import mint.mvc.annotation.Module;
 import mint.mvc.annotation.API;
+import mint.mvc.annotation.Module;
 import mint.mvc.annotation.ServiceNames;
 
-@Module(url="/serviceDemo")
+@Module(url="/serviceDemo", tags={"admin"}, id="", desc="")
 public class ServiceDemoAction {
 	
 	/**
@@ -20,9 +20,11 @@ public class ServiceDemoAction {
 	 * @param user
 	 * @return
 	 */
-	@ServiceNames("$login")
-	@API(urls="")
-	public String service(User user) {
+	@ServiceNames({"$login"})
+	@API(urls="/login/{username}/{age}", id="", desc="", protocol="https" )
+	public String service(User user, String username, Integer age) {
+		
+		
 		return "当前登录用户：" + user.getEmail();
 	}
 }

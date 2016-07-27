@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import demo.User;
 import mint.mvc.annotation.InterceptorConfig;
-import mint.mvc.annotation.InterceptorOrder;
 import mint.mvc.core.APIConfig;
 import mint.mvc.core.ActionContext;
 import mint.mvc.core.Interceptor;
@@ -18,7 +17,6 @@ import mint.mvc.core.ModuleConfig;
  * @author LiangWei(cnliangwei@foxmail.com)
  * @date 2015年5月2日 下午1:51:58 
  */
-@InterceptorOrder(0)
 @InterceptorConfig(urls={"/**"}, id="i2899176", desc="全局拦截器，进行统一的授权处理", tags={"admin", "auth"})
 public class GlobalInterceptor extends Interceptor{
 	

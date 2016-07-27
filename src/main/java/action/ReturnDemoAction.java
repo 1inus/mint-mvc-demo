@@ -19,7 +19,7 @@ public class ReturnDemoAction {
 	 * <p>返回字符串等普通数据</p>
 	 * @return
 	 */
-	@API(urls="/returnString", method="get")
+	@API(urls="/returnString")
 	public String returnString(){
 		return "return string";
 	}

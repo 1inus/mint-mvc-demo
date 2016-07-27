@@ -19,7 +19,7 @@
 		<servlet-name>dispatcher</servlet-name>
 		<servlet-class>mint.mvc.core.ServiceServlet</servlet-class>
 		
-		<!-- 声明组件（包括action、interceptor、service）所在的包，mvc启动时回到对应的包下扫描并初始化各个组件 -->
+		<!-- 声明组件（包括module、interceptor、service）所在的包，mvc启动时回到对应的包下扫描并初始化各个组件 -->
 		<init-param>
 			<param-name>componentReportor</param-name>
 			<param-value>reportor.MyComponentReportor</param-value>

@@ -1,8 +1,5 @@
 package service;
 
-import javax.servlet.http.HttpServletRequest;
-
-import demo.User;
 import mint.mvc.annotation.ServiceConfig;
 import mint.mvc.core.APIConfig;
 import mint.mvc.core.ActionContext;
@@ -19,21 +16,13 @@ import mint.mvc.core.ServiceChain;
  * 
  * <p>服务特别的方便有用，常见的使用场合比如验证码验证，文件上传等，也可以用来做自动登陆</p>
  */
-@ServiceConfig(name = "$login")
-public class LoginService extends Service{
+@ServiceConfig(name="$auth")
+public class AuthService extends Service{
 
 	@Override
 	public void service(ActionContext ctx, ModuleConfig module, APIConfig api, ServiceChain chain) throws Exception {
-		HttpServletRequest request = ctx.getHttpServletRequest();
+        //
 		
-		//在Service中进行基础认证
-		User user = new User();
-        user.setId("8888");
-        user.setEmail("cnliangwei@foxmail.com");
-        
-        //然后用request把认证结果传递到action中
-        request.setAttribute("user", user);
-        
         chain.doService(ctx);
 	}
 }
