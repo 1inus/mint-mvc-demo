@@ -1,6 +1,7 @@
 package action;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -89,6 +90,16 @@ public class ParamDemoAction {
 				arr[0], arr[1]);
 	}
 	
+
+	/**
+	 * <p>接收一个数组</p>
+	 * @param arr 能接收参数名为arr 或者 arr[] 的参数
+	 * @return
+	 */
+	@API(urls="/initMap")
+	public String mapParams(Map map){
+		return map.toString();
+	}
 	
 	/**
 	 * <h2>用request对象的属性(attribute)初始化action参数</h2>

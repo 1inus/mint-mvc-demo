@@ -29,8 +29,8 @@ public class GlobalInterceptor extends Interceptor{
         HttpServletRequest request = ctx.getHttpServletRequest();
         
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(module));
-		System.out.println(mapper.writeValueAsString(api));
+       /* System.out.println(mapper.writeValueAsString(module));
+		System.out.println(mapper.writeValueAsString(api));*/
         
         User user = new User();
         user.setId("8888");
