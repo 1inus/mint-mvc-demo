@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import demo.User;
 import mint.mvc.annotation.InterceptorConfig;
 import mint.mvc.core.APIConfig;
-import mint.mvc.core.ActionContext;
+import mint.mvc.core.RequestContext;
 import mint.mvc.core.Interceptor;
 import mint.mvc.core.InterceptorChain;
 import mint.mvc.core.ModuleConfig;
@@ -20,7 +20,7 @@ import mint.mvc.core.ModuleConfig;
 @InterceptorConfig(urls={"/**"}, id="i2899176", desc="全局拦截器，进行统一的授权处理", tags={"admin", "auth"})
 public class GlobalInterceptor extends Interceptor{
 	
-    public void intercept(ActionContext ctx, ModuleConfig module, APIConfig api, InterceptorChain chain) throws Exception {
+    public void intercept(RequestContext ctx, ModuleConfig module, APIConfig api, InterceptorChain chain) throws Exception {
     	
     	/*
     	 * 在action被调用之前，调用request.setAttribute设置的数据，

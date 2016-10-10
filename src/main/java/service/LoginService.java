@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import demo.User;
 import mint.mvc.annotation.ServiceConfig;
 import mint.mvc.core.APIConfig;
-import mint.mvc.core.ActionContext;
+import mint.mvc.core.RequestContext;
 import mint.mvc.core.ModuleConfig;
 import mint.mvc.core.Service;
 import mint.mvc.core.ServiceChain;
@@ -23,7 +23,7 @@ import mint.mvc.core.ServiceChain;
 public class LoginService extends Service{
 
 	@Override
-	public void service(ActionContext ctx, ModuleConfig module, APIConfig api, ServiceChain chain) throws Exception {
+	public void service(RequestContext ctx, ModuleConfig module, APIConfig api, ServiceChain chain) throws Exception {
 		HttpServletRequest request = ctx.getHttpServletRequest();
 		
 		//在Service中进行基础认证

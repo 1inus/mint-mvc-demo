@@ -50,7 +50,7 @@
 				<version>2.1</version>
 				<configuration>
 					<port>888</port>
-					<path>/mint-mvc-demo</path>
+					<path>/</path>
 					<uriEncoding>UTF-8</uriEncoding>
 					<finalName>mint-mvc-demo</finalName>
 					<server>tomcat7</server>

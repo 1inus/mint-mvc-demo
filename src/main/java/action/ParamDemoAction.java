@@ -8,9 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import demo.Gender;
 import demo.User;
-import mint.mvc.annotation.Module;
 import mint.mvc.annotation.API;
+import mint.mvc.annotation.Module;
 import mint.mvc.annotation.Required;
 
 /**
@@ -27,7 +28,7 @@ import mint.mvc.annotation.Required;
  * @author liangwei
  */
 
-@Module(url="/paramDemo")
+@Module(url="/param_demo")
 public class ParamDemoAction {
 	
 	/**
@@ -59,7 +60,7 @@ public class ParamDemoAction {
 	 * @param pwd
 	 * @return
 	 */
-	@API(urls="/requestParams")
+	@API(urls="/request_params")
 	public String requestParams(String name, String pwd){
 		return String.format("接受到参数：name=%s;password=%s",
 				name, pwd);
@@ -73,7 +74,7 @@ public class ParamDemoAction {
 	 * @param u
 	 * @return
 	 */
-	@API(urls="/initBean")
+	@API(urls="/init_bean")
 	public String initBean(@Required User u){
 		return String.format("接受到参数：id=%s;email=%s",
 				u.getId(), u.getEmail());
@@ -84,7 +85,7 @@ public class ParamDemoAction {
 	 * @param arr 能接收参数名为arr 或者 arr[] 的参数
 	 * @return
 	 */
-	@API(urls="/initArray")
+	@API(urls="/init_array")
 	public String arrayParams(Integer[] arr){
 		return String.format("接受到参数：arr[0]=%d;arr[1]=%d",
 				arr[0], arr[1]);
@@ -96,8 +97,8 @@ public class ParamDemoAction {
 	 * @param arr 能接收参数名为arr 或者 arr[] 的参数
 	 * @return
 	 */
-	@API(urls="/initMap")
-	public String mapParams(Map map){
+	@API(urls="/init_map")
+	public String mapParams(Map<String, String> map){
 		return map.toString();
 	}
 	
@@ -114,7 +115,7 @@ public class ParamDemoAction {
 	 * @param user
 	 * @return
 	 */
-	@API(urls="/getAttribute")
+	@API(urls="/get_attribute")
 	public String getAttribute(User user){
 		return String.format("接受到参数：id=%s;email=%s", 
 				user.getId(), user.getEmail());
@@ -124,7 +125,7 @@ public class ParamDemoAction {
 	 * 设置cookie
 	 * @param resp
 	 */
-	@API(urls="/setCookie", method="get")
+	@API(urls="/set_cookie", method="get")
 	public String setCookie(HttpServletResponse resp){
 		String c0 = "for auto login" + new Date().getTime()/1000;
 		String c1 = new Date().getTime()/1000+"";
@@ -154,7 +155,7 @@ public class ParamDemoAction {
 	 * @param session
 	 * @param cookies
 	 */
-	@API(urls="/buildIdParams")
+	@API(urls="/build_id_params")
 	public String buildIdParams(
 			HttpServletResponse resp, 
 			HttpServletRequest req, 
@@ -175,7 +176,7 @@ public class ParamDemoAction {
 	 * @param UID
 	 * @return
 	 */
-	@API(urls="/getCookie")
+	@API(urls="/get_cookie")
 	public String getCookie(Cookie UID, Cookie DATE){
 		return String.format("获取到cookie：cookie(UID)=%s;cookie(DATE)=%s", 
 				UID.getValue(), DATE.getValue());
@@ -184,5 +185,16 @@ public class ParamDemoAction {
 	@API(urls="/test")
 	public void test(String key, String pageSize, String page){
 		System.out.println("key:"+key+"pageSize:"+pageSize+"page:"+page);
+	}
+	
+	/**
+	 * <p>支持枚举参数，可以用name值初始化，也可以用ordinal值初始化</p>
+	 * @param gender
+	 * @return
+	 */
+	@API(urls="/enum")
+	public Object testEnum(Gender gender){
+		System.out.println(gender);
+		return gender;
 	}
 }
